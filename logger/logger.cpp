@@ -6,10 +6,12 @@
 #include "logger_messages.h"
 
 Logger::Logger() {	
+	std::cout << "Logger constructor\n";
 	this->logfile.open("log", std::fstream::out);
 }
 
 Logger::~Logger() {
+	std::cout << "Logger destructor\n";
 	this->logfile.close();
 }
 

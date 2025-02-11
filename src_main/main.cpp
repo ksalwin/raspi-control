@@ -1,13 +1,11 @@
 #include <iostream>
 
-#include "logger.h"
+#include "App.h"
 
 int main() {
-	Logger logger;
+	App app;
 
-	logger.write(LoggerMsg::APP_START);
+	app.start();
 
-	std::cout << "Hello world!" << '\n';
-	
-	logger.write(LoggerMsg::APP_TERMINATE);
+	return 0;
 }
