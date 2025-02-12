@@ -37,7 +37,7 @@ void Logger::write(const std::string & msg) {
 				<< '\n';
 }
 
-void Logger::write(const std::string & msg, const std::string & value) {
+void Logger::write(const std::string & tag, const std::string & content) {
 	// Get current time as number of seconds since 1 Jan 1970
 	time_t raw_time = std::time(nullptr);
 
@@ -49,14 +49,10 @@ void Logger::write(const std::string & msg, const std::string & value) {
 	std::cout	<< '['
 				<< std::put_time(time_struct, "%Y-%m-%d %H:%M:%S")
 				<< "] "
-				<< msg
-				<< value
-				<< '\n';
+				<< tag << ": " << content << '\n';
 
 	this->logfile	<< '['
-				<< std::put_time(time_struct, "%Y-%m-%d %H:%M:%S")
-				<< "] "
-				<< msg
-				<< value
-				<< '\n';
+					<< std::put_time(time_struct, "%Y-%m-%d %H:%M:%S")
+					<< "] "
+					<< tag << ": " << content << '\n';
 }
