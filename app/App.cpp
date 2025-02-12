@@ -19,8 +19,9 @@ void App::start() {
 
 	do
 	{
-		show_menu();	
+		show_menu();
 		get_user_input(input);
+		log_user_input(input);
 		handle_user_input(input);
 	} while(is_running == true);
 
