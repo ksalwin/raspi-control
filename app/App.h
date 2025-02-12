@@ -6,12 +6,13 @@
 
 class App {
 	private:
-		bool is_running = true;
+		bool is_running {true};
 		Logger logger;
 
 		inline void	get_user_input(std::string & input);
 		inline void log_user_input(const std::string & input);
 
+		void		cmd_discover_rpi();
 		void 		handle_user_input(const std::string & input);
 		void		show_menu();
 	public:
