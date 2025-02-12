@@ -33,3 +33,6 @@
 
 # Build directory
 gen_build/
+
+# Vim swap files
+*.swp
