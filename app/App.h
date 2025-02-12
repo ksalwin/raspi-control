@@ -12,7 +12,7 @@ class App {
 		ILogger & logger;
 		NetworkHandler net_handler;
 
-		inline void	get_user_input(std::string & input);
+		inline void get_user_input(std::string & input);
 		inline void log_user_input(const std::string & input);
 
 		void		cmd_discover_rpi();
@@ -23,7 +23,7 @@ class App {
 		void start();
 };
 
-inline void	App::get_user_input(std::string & input) {
+inline void App::get_user_input(std::string & input) {
 	std::cin >> input;
 }
 
