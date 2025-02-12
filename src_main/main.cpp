@@ -1,8 +1,10 @@
 #include "App.h"
+#include "Logger.h"
 
 int main() {
-	App app;
+	Logger logger;
 
+	App app(logger);
 	app.start();
 
 	return 0;

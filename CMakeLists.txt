@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # List of headers
 set(HEADERS
 	app/App.h
+	logger/ILogger.h
 	logger/Logger.h
 	logger/LoggerMsg.h
 	network_handler/NetworkHandler.h)
