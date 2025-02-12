@@ -19,4 +19,5 @@ class Logger
 		~Logger();
 
 		void write(const std::string & msg);
+		void write(const std::string & msg, const std::string & value);
 };
