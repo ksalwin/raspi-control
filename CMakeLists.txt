@@ -12,15 +12,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(HEADERS
 	app/App.h
 	logger/Logger.h
-	logger/LoggerMsg.h)
+	logger/LoggerMsg.h
+	network_handler/NetworkHandler.h)
 
 # List of sources
 set(SOURCES
 	app/App.cpp
 	logger/Logger.cpp
+	network_handler/NetworkHandler.cpp
 	src_main/main.cpp)
 
 add_executable(raspi-control ${HEADERS} ${SOURCES})
 
 # Include directories
-target_include_directories(raspi-control PRIVATE app logger src_main)
+target_include_directories(raspi-control PRIVATE app logger network_handler
+							src_main)
