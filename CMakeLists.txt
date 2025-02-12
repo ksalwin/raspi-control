@@ -11,12 +11,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # List of headers
 set(HEADERS
 	app/App.h
-	logger/logger.h)
+	logger/Logger.h
+	logger/LoggerMsg.h)
 
 # List of sources
 set(SOURCES
 	app/App.cpp
-	logger/logger.cpp
+	logger/Logger.cpp
 	src_main/main.cpp)
 
 add_executable(raspi-control ${HEADERS} ${SOURCES})

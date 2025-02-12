@@ -1,9 +1,9 @@
-#include "logger.h"
+#include "Logger.h"
 #include <ctime>
 #include <iomanip>	// Needed for put_time
 #include <iostream>
 
-#include "logger_messages.h"
+#include "LoggerMsg.h"
 
 Logger::Logger() {	
 	std::cout << "Logger constructor\n";

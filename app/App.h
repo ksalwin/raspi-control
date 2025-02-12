@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <string>
-#include "logger.h"
+#include "Logger.h"
 
 class App {
 	private:

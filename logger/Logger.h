@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 
-#include "logger_messages.h"
+#include "LoggerMsg.h"
 
 class Logger
 {
