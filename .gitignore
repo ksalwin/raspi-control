@@ -32,7 +32,7 @@
 *.app
 
 # Build directory
-gen_build/
+build/
 
 # Vim swap files
 *.swp
