@@ -10,3 +10,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Build config
 include(cmake/build_config.cmake)
+
+# Tests
+if (ENABLE_TESTS)
+	include(cmake/test.cmake)
+endif()
