@@ -8,9 +8,9 @@ set(HEADERS
 set(SOURCES
 	app/App.cpp
 	logger/Logger.cpp
-	network_handler/NetworkHandler.cpp
-	src_main/main.cpp)
+	main/main.cpp
+	network_handler/NetworkHandler.cpp)
 
 add_executable(raspi-control ${HEADERS} ${SOURCES})
 
-target_include_directories(raspi-control PRIVATE app logger network_handler src_main)
+target_include_directories(raspi-control PRIVATE app logger main network_handler)
