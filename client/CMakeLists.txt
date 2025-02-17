@@ -8,14 +8,16 @@ include(cmake/check_dependencies.cmake)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Build config
+# Executables
 add_executable(${PROJECT_NAME})
+
+if (ENABLE_TESTS)
+	add_executable(test-${PROJECT_NAME})
+	include(cmake/test.cmake)
+endif()
+
+# Subdirectories
 add_subdirectory(app)
 add_subdirectory(logger)
 add_subdirectory(main)
 add_subdirectory(network_handler)
-
-# Tests
-if (ENABLE_TESTS)
-	include(cmake/test.cmake)
-endif()
