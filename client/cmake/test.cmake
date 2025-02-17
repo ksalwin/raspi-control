@@ -7,8 +7,8 @@ add_subdirectory(${GTEST_DIR} ${CMAKE_BINARY_DIR}/googletest)
 set(TEST_SOURCES
 	test/main.cpp)
 
-add_executable(test-raspi-control ${TEST_SOURCES})
+add_executable(test-${PROJECT_NAME} ${TEST_SOURCES})
 
-target_link_libraries(test-raspi-control PRIVATE gtest gtest_main)
+target_link_libraries(test-${PROJECT_NAME} PRIVATE gtest gtest_main)
 
-add_test(NAME test-raspi-control COMMAND test-raspi-control)
+add_test(NAME test-${PROJECT_NAME} COMMAND test-${PROJECT_NAME})

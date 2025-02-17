@@ -11,6 +11,6 @@ set(SOURCES
 	main/main.cpp
 	network_handler/NetworkHandler.cpp)
 
-add_executable(raspi-control ${HEADERS} ${SOURCES})
+add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
-target_include_directories(raspi-control PRIVATE app logger main network_handler)
+target_include_directories(${PROJECT_NAME} PRIVATE app logger main network_handler)
