@@ -11,6 +11,7 @@ class Logger : public ILogger {
 	private:
 		std::ofstream logfile;
 
+		std::string	get_timestamp();
 		void print_to_console	(const char *time, const char *msg);
 		void print_to_file		(const char *time, const char *msg);
 
