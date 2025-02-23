@@ -32,26 +32,16 @@ std::string Logger::get_timestamp() {
 
 void Logger::write(const std::string & msg)
 {
-	std::string timestamp { get_timestamp() };
+	std::string log_msg { get_timestamp() + ' ' + msg + '\n' };
 
-	// Print log message
-	std::cout	<< timestamp << ' '
-				<< msg
-				<< '\n';
-
-	logfile		<< timestamp << ' '
-				<< msg
-				<< '\n';
+	std::cout	<< log_msg;
+	logfile		<< log_msg;
 }
 
 void Logger::write(const std::string & tag, const std::string & content)
 {
-	std::string timestamp { get_timestamp() };
+	std::string log_msg { get_timestamp() + ' ' + tag + ": " + content + '\n' };
 
-	// Print log message
-	std::cout	<< timestamp << ' '
-				<< tag << ": " << content << '\n';
-
-	logfile		<< timestamp << ' '
-				<< tag << ": " << content << '\n';
+	std::cout	<< log_msg;
+	logfile		<< log_msg;
 }
