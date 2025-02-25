@@ -1,8 +1,3 @@
-# Build
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_sources(${PROJECT_NAME} PUBLIC main.cpp)
 
-# Test
-if(TARGET test-${PROJECT_NAME})
-	target_sources(test-${PROJECT_NAME} PRIVATE test-main.cpp)
-endif()
+target_sources(${PROJECT_NAME} PUBLIC main.cpp)

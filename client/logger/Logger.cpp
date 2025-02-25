@@ -6,13 +6,11 @@
 #include "LoggerMsg.h"
 
 Logger::Logger() {	
-	std::cout << "Logger constructor\n";
-	this->logfile.open("log", std::fstream::out);
+	logfile.open("log", std::fstream::out);
 }
 
 Logger::~Logger() {
-	std::cout << "Logger destructor\n";
-	this->logfile.close();
+	logfile.close();
 }
 
 std::string Logger::get_timestamp() {
@@ -28,6 +26,11 @@ std::string Logger::get_timestamp() {
 	time_stream << "[" << std::put_time(time_struct, "%Y-%m-%d %H:%M:%S") << "]";
 
 	return time_stream.str();
+}
+
+bool Logger::is_logfile_open()
+{
+	return logfile.is_open();
 }
 
 void Logger::write(const std::string & msg)

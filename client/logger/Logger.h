@@ -19,6 +19,8 @@ class Logger : public ILogger {
 		Logger();
 		~Logger();
 
+		bool is_logfile_open();
+
 		void write(const std::string & msg) override;
 		void write(const std::string & tag, const std::string & content) override;
 };
