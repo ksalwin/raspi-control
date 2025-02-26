@@ -10,7 +10,8 @@ Logger::Logger() {
 }
 
 Logger::~Logger() {
-	logfile.close();
+	if(logfile.is_open() == true)
+		logfile.close();
 }
 
 std::string Logger::get_timestamp() {
