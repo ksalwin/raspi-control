@@ -11,7 +11,7 @@ constexpr auto file_n = "log";
 
 //---TESTS--------------------------------------------------------------------------------
 
-TEST(TestLogger, Logfile_open_and_close)
+TEST(TestLogger, Open_logfile)
 {
 	// stat is a struct defined in <sys/stat.h>.
 	// It holds metadata about a file (size, type, mod date, permissions).
@@ -33,9 +33,33 @@ TEST(TestLogger, Logfile_open_and_close)
 	EXPECT_EQ(file_opened_w, true) << "[ERROR] Logfile not opened for write";
 }
 
+TEST(TestLogger, Close_logfile)
+{
+	// 1: Try to open the file - check if it was closed properly in prev test
+	// 2: Open and close the file using Logger
+	// 3: Try to open the file again - check if it was closed properly by Logger
+
+	// 1
+	// If the destructor didn’t close it, you might see a failure.
+	// std::ios::app puts position at the end of a fille.
+    std::ofstream logfile1(file_n, std::ios::app);
+    EXPECT_TRUE(logfile1.is_open()) << "[ERROR] File not closed properly in prev test";
+    logfile1.close();
+
+	// 2
+	{
+		Logger logger;
+	}
+
+	// 3
+    std::ofstream logfile(file_n, std::ios::app);
+    EXPECT_TRUE(logfile.is_open()) << "[ERROR] File not closed properly by Logger";
+    logfile.close();
+}
+
 TEST(TestLogger, Write_to_logfile)
 {
-	std::string test_txt {"Some text 123"};
+	const std::string test_txt {"Some text 123"};
 	std::string readback {};
 	std::regex pattern (R"(\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] Some text 123)");
 
