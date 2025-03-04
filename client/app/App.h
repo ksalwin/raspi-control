@@ -8,6 +8,8 @@
 
 class App {
 	private:
+		static constexpr const char *class_name {"App"};
+
 		bool is_running {true};
 		ILogger & logger;
 		ServerDiscovery server_discovery;

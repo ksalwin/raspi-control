@@ -8,7 +8,7 @@ void App::handle_user_input(const std::string & input) {
 	else if	(input == "q" || input == "quit")
 	{
 		server_discovery.stop();
-		std:: cout << "Terminating application\n";
+		std:: cout << "[" << class_name << "] " << "Terminating application\n";
 		is_running = false;
 	}
 	else { /* Undefined cmd */ }
