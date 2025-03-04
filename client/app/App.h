@@ -4,18 +4,17 @@
 #include <string>
 #include "ILogger.h"
 #include "Logger.h"
-#include "NetworkHandler.h"
+#include "ServerDiscovery.h"
 
 class App {
 	private:
 		bool is_running {true};
 		ILogger & logger;
-		NetworkHandler net_handler;
+		ServerDiscovery server_discovery;
 
 		inline void get_user_input(std::string & input);
 		inline void log_user_input(const std::string & input);
 
-		void		cmd_discover_rpi();
 		void 		handle_user_input(const std::string & input);
 		void		show_menu();
 	public:

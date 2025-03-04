@@ -1,20 +1,13 @@
 #include "App.h"
 
-void App::cmd_discover_rpi() {
-	// todo: Start rpi listener in backgrond
-	// ...
-
-	// Send broadcast UDP packet to detect rpi
-	net_handler.send_broadcast_udp_packet();
-}
-
 void App::handle_user_input(const std::string & input) {
 	if		(input == "d" || input == "detect-rpi")
 	{
-		cmd_discover_rpi();
+		server_discovery.start();
 	}
 	else if	(input == "q" || input == "quit")
 	{
+		server_discovery.stop();
 		std:: cout << "Terminating application\n";
 		is_running = false;
 	}
@@ -23,7 +16,7 @@ void App::handle_user_input(const std::string & input) {
 
 void App::show_menu() {
 	std::cout	<< "=== Main Menu ===\n"
-				<< "'d' or 'detect-rpi' to detect Raspberr Pi on local network.\n"
+				<< "'d' or 'detect-rpi' to detect Raspberry Pi on local network.\n"
 				<< "'q' or 'quit' or 'exit' to quit.\n";
 }
 
