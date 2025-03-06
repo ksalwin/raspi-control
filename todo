@@ -1,4 +1,5 @@
 - NetworkHandler: add background rpi response listener to app broadcast discovery msg
-- NetworkHandler: add sending broadcast UDP packet to rpi
-- Logger: add get_timestamp_str() function
 - Logger: add implementation for print to file and to console
+
++ Logger: add get_timestamp_str() function
++ ServerDiscovery: add sending broadcast UDP packet to rpi
