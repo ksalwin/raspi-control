@@ -55,7 +55,7 @@ case "$1" in
 
 	test)
 		cd "$CLIENT_DIR"
-		build_client -DTEST=ON
+		build_client -DBUILD_TESTS=ON
 		ctest --test-dir "$BUILD_DIR"
 		;;
 
