@@ -8,7 +8,7 @@ CLIENT_DIR="client"
 # Check if CMake is installed
 if ! command -v cmake &> /dev/null
 then
-    echo "[Error] CMake is not installed. Please install CMake and try again."
+	printf "\e[31m[Error]\e[0m CMake is not installed. Please install it and try again.\n"
     exit 1
 fi
 
