@@ -5,6 +5,16 @@ set -e # Exit on error
 BUILD_DIR="build"
 CLIENT_DIR="client"
 
+# Check if CMake is installed
+if ! command -v cmake &> /dev/null
+then
+    echo "[Error] CMake is not installed. Please install CMake and try again."
+    exit 1
+fi
+
+echo "CMake is installed. Proceeding with the script..."
+
+
 function print_usage() {
 	echo "Usage: $0 [command]"
 	echo
