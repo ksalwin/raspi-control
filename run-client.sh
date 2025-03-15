@@ -5,15 +5,21 @@ set -e # Exit on error
 BUILD_DIR="build"
 CLIENT_DIR="client"
 
-# Check if CMake is installed
-if ! command -v cmake &> /dev/null
-then
-	printf "\e[31m[Error]\e[0m CMake is not installed. Please install it and try again.\n"
-    exit 1
-fi
+# --- Functions ---
+function ensure_arg_provided() {
+	if [ "$1" -eq 0 ]; then
+		print_usage
+		exit 1
+	fi
+}
 
-echo "CMake is installed. Proceeding with the script..."
-
+function ensure_cmake_installed() {
+	if ! command -v cmake &>/dev/null; then
+		printf	"\e[31m[Error]\e[0m CMake is not installed. "
+		printf	"Install CMake and try again.\n"
+		exit 1
+	fi
+}
 
 function print_usage() {
 	echo "Usage: $0 [command]"
@@ -25,12 +31,6 @@ function print_usage() {
 	echo "	test  - test client"
 }
 
-# Check if input argument was provided
-if [ $# -eq 0 ]; then
-	print_usage
-	exit 1
-fi
-
 function make_build_dir() {
   [ -d "$BUILD_DIR" ] || mkdir "$BUILD_DIR"
 }
@@ -40,6 +40,11 @@ function build_client() {
 	cmake -B "$BUILD_DIR" "$@"
 	cmake --build "$BUILD_DIR"
 }
+
+# --- Main Execution ---
+
+ensure_arg_provided "$#"
+ensure_cmake_installed
 
 case "$1" in
 	build)
