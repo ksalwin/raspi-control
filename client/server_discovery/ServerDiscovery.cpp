@@ -10,9 +10,14 @@ ServerDiscovery::ServerDiscovery() : keep_thread_alive(false), sockfd(-1)
 	setup_socket();
 }
 
+ServerDiscovery::ServerDiscovery(Logger *const _logger): logger(_logger)
+{
+	std::cout << "[" << class_name << "] " << "Constructor\n";
+	setup_socket();
+}
+
 ServerDiscovery::~ServerDiscovery()
 {
-	std::cout << "[" << class_name << "] " << "Destructor\n";
 	stop();
 	close_socket();
 }

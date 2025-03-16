@@ -7,9 +7,13 @@
 #include <thread>
 #include <unistd.h>
 
+#include "Logger.h"
+
 class ServerDiscovery {
 	private:
 		static constexpr const char *class_name {"ServerDiscovery"};
+
+		Logger *const logger = nullptr;
 
 		std::atomic<bool> keep_thread_alive;
 		std::thread server_discovery_thread;
@@ -28,6 +32,7 @@ class ServerDiscovery {
 		void close_socket();
 	public:
 		ServerDiscovery();
+		ServerDiscovery(Logger *const logger);
 		~ServerDiscovery();
 		void start();
 		void stop();
