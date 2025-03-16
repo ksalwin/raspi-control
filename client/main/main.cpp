@@ -4,7 +4,7 @@
 int main() {
 	Logger logger;
 
-	App app(logger);
+	App app(&logger);
 	app.start();
 
 	return 0;

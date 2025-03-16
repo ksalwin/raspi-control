@@ -27,6 +27,7 @@ class ServerDiscovery {
 														"are you there?"		};
 		static constexpr const char *broadcast_ip	{"192.168.0.255"};
 
+		inline void log_if_possible(const std::string & msg);
 		void run();
 		void setup_socket();
 		void close_socket();
@@ -37,3 +38,7 @@ class ServerDiscovery {
 		void start();
 		void stop();
 };
+
+inline void ServerDiscovery::log_if_possible(const std::string & msg) {
+	if(logger) logger->write(class_name + msg);
+}

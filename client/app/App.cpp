@@ -22,15 +22,15 @@ void App::show_menu() {
 void App::start() {
 	std::string input;
 
-	logger.write(LoggerMsg::APP_START);
+	log_if_possible(LoggerMsg::APP_START);
 
 	do
 	{
 		show_menu();
 		get_user_input(input);
-		log_user_input(input);
+		log_if_possible(LoggerMsg::USER_INPUT, input);
 		handle_user_input(input);
 	} while(is_running == true);
 
-	logger.write(LoggerMsg::APP_TERMINATE);
+	log_if_possible(LoggerMsg::APP_TERMINATE);
 }

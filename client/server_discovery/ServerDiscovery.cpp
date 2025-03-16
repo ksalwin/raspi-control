@@ -6,19 +6,20 @@
 
 ServerDiscovery::ServerDiscovery() : keep_thread_alive(false), sockfd(-1)
 {
-	std::cout << "[" << class_name << "] " << "Constructor\n";
+	log_if_possible("Socket setup");
 	setup_socket();
 }
 
 ServerDiscovery::ServerDiscovery(Logger *const _logger): logger(_logger)
 {
-	std::cout << "[" << class_name << "] " << "Constructor\n";
+	log_if_possible("Socket setup");
 	setup_socket();
 }
 
 ServerDiscovery::~ServerDiscovery()
 {
 	stop();
+	log_if_possible("Socket close");
 	close_socket();
 }
 
