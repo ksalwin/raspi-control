@@ -43,9 +43,9 @@ void Logger::write(const std::string & msg)
 	logfile		<< log_msg;
 }
 
-void Logger::write(const std::string & tag, const std::string & content)
+void Logger::write(const std::string & tag, const std::string & msg)
 {
-	std::string log_msg { get_timestamp() + ' ' + tag + ": " + content + '\n' };
+	std::string log_msg { get_timestamp() + ' ' + tag + ": " + msg + '\n' };
 
 	std::cout	<< log_msg;
 	logfile		<< log_msg;
