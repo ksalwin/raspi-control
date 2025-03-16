@@ -13,12 +13,13 @@ function ensure_arg_provided() {
 	fi
 }
 
-function ensure_cmake_installed() {
-	if ! command -v cmake &>/dev/null; then
-		printf	"\e[31m[Error]\e[0m CMake is not installed. "
-		printf	"Install CMake and try again.\n"
-		exit 1
-	fi
+function ensure_tool_installed() {
+    local tool="$1"
+    if ! command -v "$tool" &>/dev/null; then
+        printf "\e[31m[Error]\e[0m %s is not installed. " "$tool"
+        printf "Install %s and try again.\n" "$tool"
+        exit 1
+    fi
 }
 
 function print_usage() {
@@ -44,7 +45,7 @@ function build_client() {
 # --- Main Execution ---
 
 ensure_arg_provided "$#"
-ensure_cmake_installed
+ensure_tool_installed cmake
 
 case "$1" in
 	build)
@@ -53,6 +54,11 @@ case "$1" in
 		echo
 		echo "Build completed."
 		echo "Run executable with: ./$CLIENT_DIR/$BUILD_DIR/raspi-control"
+		;;
+	
+	doc)
+		ensure_tool_installed plantuml
+		ensure_tool_installed doc
 		;;
 
 	clean)
