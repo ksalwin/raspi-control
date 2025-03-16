@@ -14,7 +14,8 @@ Logger::~Logger() {
 		logfile.close();
 }
 
-std::string Logger::get_timestamp() {
+std::string Logger::get_timestamp() const
+{
 	// Get current time as number of seconds since 1 Jan 1970
 	time_t raw_time = std::time(nullptr);
 
@@ -29,7 +30,7 @@ std::string Logger::get_timestamp() {
 	return time_stream.str();
 }
 
-bool Logger::is_logfile_open()
+bool Logger::is_logfile_open() const
 {
 	return logfile.is_open();
 }
