@@ -7,5 +7,5 @@ The purpose of this program is to connect to a Raspberry Pi and to control measu
 and actuators.
 
 <div align="center">
-    ![Diagram](doc/system_topology.svg)
+  <img src="doc/system_topology.svg" alt="Diagram">
 </div>
