@@ -5,3 +5,4 @@
 # raspi-control
 The purpose of this program is to connect to a Raspberry Pi and to control measurements
 and actuators.
+![Diagram](doc/system_topology.svg)

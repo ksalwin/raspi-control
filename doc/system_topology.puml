@@ -1,0 +1,34 @@
+@startuml
+
+left to right direction
+
+node pc [
+	<b>PC
+	====
+	Client
+	----
+	Server discovery
+	....
+	Measurement manager
+	....
+	Measurement data logger
+]
+
+node rpi [
+	<b>Raspberry Pi
+	====
+	Server
+	----
+	Actuator controller
+	....
+	Sensor controller
+]
+
+node actuator
+node sensor
+
+pc == rpi : Ethernet
+rpi --> actuator
+rpi <-- sensor
+
+@enduml
