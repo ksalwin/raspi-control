@@ -13,7 +13,7 @@ sensors.
 
 > [!IMPORTANT]
 > This project depends on third-party, external Git repositories, included as Git
-submodules in `dependencies/' directory.
+submodules in `dependencies/` directory.
 > Before using this project or making any modifications, make sure to review and
 understand the licenses of all third-party dependencies located in the `dependencies/`
 directory. Each third-party repository may have its own license terms and conditions that
