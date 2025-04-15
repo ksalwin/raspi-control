@@ -41,6 +41,8 @@ function make_build_dir() {
 
 function build_client() {
 	make_build_dir
+	echo "[Info] Configuring with: cmake -B $BUILD_DIR/ "$@""
+	echo
 	cmake -B "$BUILD_DIR" "$@"
 	cmake --build "$BUILD_DIR"
 }
