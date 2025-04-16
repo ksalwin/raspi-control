@@ -109,7 +109,7 @@ function execute_command() {
 
 function build() {
 	make_build_dir
-	echo "[Info] Configuring with: cmake -B $BUILD_DIR/ "$@""
+	echo "[Info] Configuring with: cmake -B $BUILD_DIR/ $@"
 	echo
 	cmake -B "$BUILD_DIR" "$@"
 	cmake --build "$BUILD_DIR" -- -j$(nproc)
