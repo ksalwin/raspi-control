@@ -16,7 +16,7 @@ function print_error() {
 function ensure_arg_provided() {
 	# Check if 1st argument is `client` or `server`
 	if [[ "$1" != "client" && "$1" != "server" ]]; then
-		print_error "First argument is missing: <client|server>"
+		print_error "Invalid first argument: '$1'. Expected: <client|server>"
 		echo
 		print_usage
 		exit 1
@@ -24,7 +24,7 @@ function ensure_arg_provided() {
 
 	# Check if 2nd argument was provided
 	if [ "$#" -ne 2 ]; then
-        print_error "Second argument is missing: <command>"
+		print_error "Missing second argument <command> for mode '$1'"
 		echo
 		print_usage
 		exit 1
