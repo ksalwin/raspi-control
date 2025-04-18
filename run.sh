@@ -94,7 +94,7 @@ function execute_command() {
 			;;
 
 		*)
-			print_error "Unknown argument: $1"
+			print_error "Unknown command: `$1` for target `$project_dir`"
 			echo
 			print_usage
 			exit 1
