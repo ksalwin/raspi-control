@@ -3,9 +3,6 @@
 set -e # Exit on error
 
 ##### Defines #####
-BUILD_DIR="build"
-CLIENT_DIR="client"
-SERVER_DIR="server"
 EXECUTABLE_NAME="raspi-control"
 
 # --- Functions ---
@@ -24,7 +21,7 @@ function ensure_arg_provided() {
 
 	# Check if 2nd argument was provided
 	if [ "$#" -ne 2 ]; then
-		print_error "Missing second argument <command> for mode '$1'"
+		print_error "Missing second argument <command> for target '$1'"
 		echo
 		print_usage
 		exit 1
@@ -57,21 +54,21 @@ function print_usage() {
 }
 
 function make_build_dir() {
-  [ -d "$BUILD_DIR" ] || mkdir "$BUILD_DIR"
+	local build_dir="$1"
+	[ -d "$build_dir" ] || mkdir "$build_dir"
 }
 
 function execute_command() {
-	local mode="$1"
+	local project_dir="$1"
 	local command="$2"
-	local project_dir="$3"
+	local build_dir="$project_dir/build"
 
 	case "$command" in
 		build)
-			cd "$project_dir"
-			build
+			build "$project_dir"
 			echo
 			echo "Build completed."
-			echo "Run executable with: ./$PROJECT_DIR/$BUILD_DIR/$EXECUTABLE_NAME"
+			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
 			;;
 		
 		doc)
@@ -80,22 +77,20 @@ function execute_command() {
 			;;
 
 		clean)
-			rm -rf "$project_dir"/"$BUILD_DIR"
+			rm -rf "$build_dir"
 			echo "Cleaned build directory."
 			;;
 
 		run)
-			cd "$project_dir"
-			build
+			build "$project_dir"
 			echo
 			echo "Running executable..."
-			./"$BUILD_DIR"/"$EXECUTABLE_NAME"
+			./"$build_dir"/"$EXECUTABLE_NAME"
 			;;
 
 		test)
-			cd "$project_dir"
-			build -DBUILD_TESTS=ON
-			ctest --test-dir "$BUILD_DIR"
+			build "$project_dir" -DBUILD_TESTS=ON
+			ctest --test-dir "$build_dir"
 			;;
 
 		*)
@@ -108,33 +103,30 @@ function execute_command() {
 }
 
 function build() {
-	make_build_dir
-	echo "[Info] Configuring with: cmake -B $BUILD_DIR/ $@"
+	local project_dir="$1"
+	local build_dir="$project_dir/build"
+
+	make_build_dir "$build_dir"
+	echo "[Info] Configuring with: cmake -B $build_dir -S $project_dir $@"
 	echo
-	cmake -B "$BUILD_DIR" "$@"
-	cmake --build "$BUILD_DIR" -- -j$(nproc)
+	cmake -B "$build_dir" -S "$project_dir" "$@"
+	cmake --build "$build_dir" -- -j$(nproc)
 }
 
 ##### Main Execution #####
 
 # Ensure arguments provided
 ensure_arg_provided "$@"
+TARGET="$1"
+COMMAND="$2"
 
 # Ensure tools installed
 ensure_tool_installed cmake
 
-if [ "$1" == "server" ]; then
+if [ "$TARGET" == "server" ]; then
 	ensure_tool_installed arm-linux-gnueabihf-gcc
 	ensure_tool_installed arm-linux-gnueabihf-g++
 fi
 
-# Set project dir
-if [ "$1" == "server" ]; then
-	PROJECT_DIR=$SERVER_DIR
-	exit 0
-else
-	PROJECT_DIR=$CLIENT_DIR
-fi
-
 # Execute command
-execute_command "$1" "$2" "$PROJECT_DIR"
+execute_command "$TARGET" "$COMMAND"
