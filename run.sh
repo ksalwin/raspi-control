@@ -2,6 +2,8 @@
 
 set -e # Exit on error
 
+source "$(dirname "$0")/scripts/print_utils.sh"
+
 ##### Defines #####
 EXECUTABLE_NAME="raspi-control"
 
@@ -160,8 +162,8 @@ if   [ "$TARGET" == "client" ]; then
 	execute_client_command "$TARGET" "$COMMAND"
 
 elif [ "$TARGET" == "server" ]; then
-	ensure_tool_installed arm-linux-gnueabihf-gcc
-	ensure_tool_installed arm-linux-gnueabihf-g++
+	ensure_tool_installed arm-linux-gnu-gcc
+	ensure_tool_installed arm-linux-gnu-g++
 
 	execute_server_command "$TARGET" "$COMMAND"
 
