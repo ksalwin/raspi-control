@@ -6,38 +6,6 @@ set -e # Exit on error
 EXECUTABLE_NAME="raspi-control"
 
 # --- Functions ---
-function print_error() {
-	printf "\e[31m[ERROR]\e[0m %s\n" "$1"
-}
-
-function ensure_arg_provided() {
-	# Check if 1st argument is `client` or `server`
-	if [[ "$1" != "client" && "$1" != "server" ]]; then
-		print_error "Invalid first argument: '$1'. Expected: <client|server>"
-		echo
-		print_usage
-		exit 1
-	fi
-
-	# Check if 2nd argument was provided
-	if [ "$#" -ne 2 ]; then
-		print_error "Missing second argument <command> for target '$1'"
-		echo
-		print_usage
-		exit 1
-	fi
-}
-
-function ensure_tool_installed() {
-    local tool="$1"
-    if ! command -v "$tool" &>/dev/null; then
-        print_error "$tool is not installed"
-		echo
-		echo "Install $tool and try again."
-        exit 1
-    fi
-}
-
 function print_usage() {
 	echo "[INFO] Usage:"
 	echo "  sh $0 <client|server> <command>"
@@ -53,19 +21,69 @@ function print_usage() {
 	echo "  sh $0 client build"
 }
 
+function print_error() {
+	printf "\e[31m[ERROR]\e[0m %s\n" "$1"
+}
+
+function exit_with_command_error {
+	local target="$1"
+	local command="$2"
+
+	print_error "Unknown command: '$command' for target '$target'"
+	echo
+	print_usage
+	exit 1
+}
+
+function exit_with_target_error {
+	local target="$1"
+
+	print_error "Invalid first argument: '$target'. Expected: <client|server>"
+	echo
+	print_usage
+	exit 1
+}
+
+function exit_with_tool_error {
+	local tool="$1"
+
+	print_error "$tool is not installed"
+	echo
+	echo "Install $tool and try again."
+	exit 1
+}
+
+function ensure_tool_installed() {
+    local tool="$1"
+    if ! command -v "$tool" &>/dev/null; then
+		exit_with_tool_error "$tool"
+    fi
+}
+
 function make_build_dir() {
 	local build_dir="$1"
 	[ -d "$build_dir" ] || mkdir "$build_dir"
 }
 
-function execute_command() {
+function build() {
 	local project_dir="$1"
-	local command="$2"
 	local build_dir="$project_dir/build"
+
+	make_build_dir "$build_dir"
+	echo "[Info] Configuring with: cmake -B $build_dir -S $project_dir $@"
+	echo
+	cmake -B "$build_dir" -S "$project_dir" "$@"
+	cmake --build "$build_dir" -- -j$(nproc)
+}
+
+function execute_client_command() {
+	local target="$1"
+	local command="$2"
+	local build_dir="$target/build"
 
 	case "$command" in
 		build)
-			build "$project_dir"
+			build "$target"
 			echo
 			echo "Build completed."
 			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
@@ -82,51 +100,71 @@ function execute_command() {
 			;;
 
 		run)
-			build "$project_dir"
+			build "$target"
 			echo
 			echo "Running executable..."
 			./"$build_dir"/"$EXECUTABLE_NAME"
 			;;
 
 		test)
-			build "$project_dir" -DBUILD_TESTS=ON
+			build "$target" -DBUILD_TESTS=ON
 			ctest --test-dir "$build_dir"
 			;;
 
 		*)
-			print_error "Unknown command: `$1` for target `$project_dir`"
-			echo
-			print_usage
-			exit 1
+			exit_with_command_error "$target" "$command"
 			;;
 	esac
 }
 
-function build() {
-	local project_dir="$1"
-	local build_dir="$project_dir/build"
+function execute_server_command() {
+	local target="$1"
+	local command="$2"
+	local build_dir="$target/build"
 
-	make_build_dir "$build_dir"
-	echo "[Info] Configuring with: cmake -B $build_dir -S $project_dir $@"
-	echo
-	cmake -B "$build_dir" -S "$project_dir" "$@"
-	cmake --build "$build_dir" -- -j$(nproc)
+	case "$command" in
+		build)
+			build "$target"
+			echo
+			echo "Build completed."
+			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
+			;;
+
+		clean)
+			rm -rf "$build_dir"
+			echo "Cleaned build directory."
+			;;
+
+		run)
+			build "$target"
+			echo
+			echo "Running executable..."
+			./"$build_dir"/"$EXECUTABLE_NAME"
+			;;
+
+		*)
+			exit_with_command_error "$target" "$command"
+	esac
 }
 
-##### Main Execution #####
 
-# Ensure arguments provided
-ensure_arg_provided "$@"
+##### Main Execution #####
 TARGET="$1"
 COMMAND="$2"
 
-# Ensure tools installed
+# Ensure common tools installed
 ensure_tool_installed cmake
 
-if [ "$TARGET" == "server" ]; then
+# Execute command for target
+if   [ "$TARGET" == "client" ]; then
+	execute_client_command "$TARGET" "$COMMAND"
+
+elif [ "$TARGET" == "server" ]; then
 	ensure_tool_installed arm-linux-gnueabihf-gcc
 	ensure_tool_installed arm-linux-gnueabihf-g++
-fi
 
-# Execute command
-execute_command "$TARGET" "$COMMAND"
+	execute_server_command "$TARGET" "$COMMAND"
+
+else
+	exit_with_target_error "$TARGET"
+fi
