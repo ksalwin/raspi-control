@@ -23,10 +23,6 @@ function print_usage() {
 	echo "  sh $0 client build"
 }
 
-function print_error() {
-	printf "\e[31m[ERROR]\e[0m %s\n" "$1"
-}
-
 function exit_with_command_error {
 	local target="$1"
 	local command="$2"
