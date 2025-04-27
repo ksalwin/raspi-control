@@ -19,7 +19,7 @@ function ensure_tool_installed() {
 
 function make_build_dir() {
 	local build_dir="$1"
-	[ -d "$build_dir" ] || mkdir "$build_dir"
+	mkdir -p "$build_dir"
 }
 
 function build() {
