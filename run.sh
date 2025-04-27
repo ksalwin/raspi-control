@@ -4,19 +4,13 @@ set -e # Exit on error
 
 source "$(dirname "$0")/scripts/exit_helpers.sh"
 source "$(dirname "$0")/scripts/print_utils.sh"
+source "$(dirname "$0")/scripts/tool_helpers.sh"
 source "$(dirname "$0")/scripts/usage.sh"
 
 ##### Defines #####
 EXECUTABLE_NAME="raspi-control"
 
 # --- Functions ---
-function ensure_tool_installed() {
-    local tool="$1"
-    if ! command -v "$tool" &>/dev/null; then
-		exit_with_tool_error "$tool"
-    fi
-}
-
 function make_build_dir() {
 	local build_dir="$1"
 	mkdir -p "$build_dir"
