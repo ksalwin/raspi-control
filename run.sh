@@ -2,55 +2,14 @@
 
 set -e # Exit on error
 
+source "$(dirname "$0")/scripts/exit_helpers.sh"
 source "$(dirname "$0")/scripts/print_utils.sh"
+source "$(dirname "$0")/scripts/usage.sh"
 
 ##### Defines #####
 EXECUTABLE_NAME="raspi-control"
 
 # --- Functions ---
-function print_usage() {
-	echo "[INFO] Usage:"
-	echo "  sh $0 <client|server> <command>"
-	echo
-	echo "Available commands:"
-	echo "  build    - Configure and build the project"
-	echo "  clean    - Remove build artifacts"
-	echo "  run      - Build and run the executable"
-	echo "  test     - Build with tests and run them"
-	echo "  doc      - Generate documentation (requires 'doc' and 'plantuml')"
-	echo
-	echo "Example:"
-	echo "  sh $0 client build"
-}
-
-function exit_with_command_error {
-	local target="$1"
-	local command="$2"
-
-	print_error "Unknown command: '$command' for target '$target'"
-	echo
-	print_usage
-	exit 1
-}
-
-function exit_with_target_error {
-	local target="$1"
-
-	print_error "Invalid first argument: '$target'. Expected: <client|server>"
-	echo
-	print_usage
-	exit 1
-}
-
-function exit_with_tool_error {
-	local tool="$1"
-
-	print_error "$tool is not installed"
-	echo
-	echo "Install $tool and try again."
-	exit 1
-}
-
 function ensure_tool_installed() {
     local tool="$1"
     if ! command -v "$tool" &>/dev/null; then
