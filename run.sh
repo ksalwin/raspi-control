@@ -18,6 +18,7 @@ function make_build_dir() {
 
 function build() {
 	local project_dir="$1"
+	shift # Remove "$1" from "$@", to not repeat "$1" in `cmake -B`
 	local build_dir="$project_dir/build"
 
 	make_build_dir "$build_dir"
@@ -75,7 +76,8 @@ function execute_server_command() {
 
 	case "$command" in
 		build)
-			build "$target"
+			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
+			build "$target" -DCMAKE_TOOLCHAIN_FILE="$cmake_toolchain_file"
 			echo
 			echo "Build completed."
 			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
@@ -87,7 +89,8 @@ function execute_server_command() {
 			;;
 
 		run)
-			build "$target"
+			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
+			build "$target" -DCMAKE_TOOLCHAIN_FILE="$cmake_toolchain_file"
 			echo
 			echo "Running executable..."
 			./"$build_dir"/"$EXECUTABLE_NAME"
