@@ -77,7 +77,7 @@ function execute_server_command() {
 	case "$command" in
 		build)
 			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
-			build "$target" -DCMAKE_TOOLCHAIN_FILE="$cmake_toolchain_file"
+			build "$target" -DCMAKE_TOOLCHAIN_FILE="$toolchain_file"
 			echo
 			echo "Build completed."
 			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
@@ -90,7 +90,7 @@ function execute_server_command() {
 
 		run)
 			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
-			build "$target" -DCMAKE_TOOLCHAIN_FILE="$cmake_toolchain_file"
+			build "$target" -DCMAKE_TOOLCHAIN_FILE="$toolchain_file"
 			echo
 			echo "Running executable..."
 			./"$build_dir"/"$EXECUTABLE_NAME"
