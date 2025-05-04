@@ -82,12 +82,24 @@ function execute_server_command() {
 			echo "Build completed."
 			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
 			;;
-
 		clean)
 			rm -rf "$build_dir"
 			echo "Cleaned build directory."
 			;;
+		deploy)
+			local binary_path="$build_dir/$EXECUTABLE_NAME"
 
+			if [ ! -f "$binary_path" ]; then
+				print_error "Binary not found at $binary_path."
+				echo "Run './run.sh server build'."
+				exit 1
+			fi
+
+			echo "[Info] Deploying $binary_path to $RASPBERRY_PI_USER@$RASPBERRY_PI_IP:$RASPBERRY_PI_DEST_DIR"
+			ssh "$RASPBERRY_PI_USER@$RASPBERRY_PI_IP" "mkdir -p $RASPBERRY_PI_DEST_DIR"
+			scp "$binary_path" "$RASPBERRY_PI_USER@$RASPBERRY_PI_IP:$RASPBERRY_PI_DEST_DIR/"
+			echo "[Success] Deployed to Raspberry Pi."
+			;;
 		run)
 			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
 			build "$target" -DCMAKE_TOOLCHAIN_FILE="$toolchain_file"
@@ -95,7 +107,6 @@ function execute_server_command() {
 			echo "Running executable..."
 			./"$build_dir"/"$EXECUTABLE_NAME"
 			;;
-
 		*)
 			exit_with_command_error "$target" "$command"
 	esac
