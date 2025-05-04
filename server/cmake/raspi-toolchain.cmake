@@ -7,8 +7,11 @@ set(CMAKE_SYSTEM_PROCESSOR arm)
 set(CMAKE_C_COMPILER   arm-linux-gnu-gcc)
 set(CMAKE_CXX_COMPILER arm-linux-gnu-g++)
 
-# Optional: define sysroot if you copy your RPi2 root filesystem (improves library compatibility)
-# set(CMAKE_SYSROOT /path/to/raspberrypi/sysroot)
+# Get the path to this file (raspi-toolchain.cmake)
+get_filename_component(TOOLCHAIN_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+# Make sysroot path absolute and portable
+set(CMAKE_SYSROOT "${TOOLCHAIN_DIR}/../raspi-sysroot" CACHE PATH "Raspberry Pi sysroot")
 
 
 # Ensure CMake finds headers and libraries in the sysroot
