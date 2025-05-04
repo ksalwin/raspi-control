@@ -69,12 +69,47 @@ function execute_client_command() {
 	esac
 }
 
+function sync_raspi_sysroot() {
+	local sysroot_dir="$1"
+	local raspi_user="$2"
+	local raspi_ip="$3"
+
+	# Skip if sysroot exists and is non-empty
+	if [ -d "$sysroot_dir" ] && [ "$(ls -A "$sysroot_dir")" ]; then
+		print_info "Raspberry Pi sysroot already exists at $sysroot_dir"
+		return
+	fi
+
+	print_info "Syncing Raspberry Pi sysroot into $sysroot_dir ..."
+	mkdir -p "$sysroot_dir"
+
+	rsync -avz --delete "$raspi_user@$raspi_ip":/lib/ "$sysroot_dir/lib/"
+	rsync -avz --delete "$raspi_user@$raspi_ip":/usr/ "$sysroot_dir/usr/"
+	rsync -avz --delete "$raspi_user@$raspi_ip":/opt/ "$sysroot_dir/opt/"
+	rsync -avz --delete "$raspi_user@$raspi_ip":/etc/ "$sysroot_dir/etc/"
+
+	print_info "Raspberry Pi sysroot synced to $sysroot_dir"
+}
+
+
 function execute_server_command() {
 	local target="$1"
 	local command="$2"
 	local build_dir="$target/build"
 
 	case "$command" in
+		build)
+			local raspi_user="$3"
+			local raspi_ip="$4"
+			sync_raspi_sysroot "$target/raspi-sysroot" "$raspi_user" "$raspi_ip"
+
+			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
+
+			build "$target" -DCMAKE_TOOLCHAIN_FILE="$toolchain_file"
+			echo
+			echo "Build completed."
+			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
+			;;
 		build)
 			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
 			build "$target" -DCMAKE_TOOLCHAIN_FILE="$toolchain_file"
