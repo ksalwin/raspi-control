@@ -71,22 +71,42 @@ function execute_client_command() {
 
 function sync_raspi_sysroot() {
 	local sysroot_dir="$1"
+
 	local raspi_user="$2"
 	local raspi_ip="$3"
 
-	# Skip if sysroot exists and is non-empty
-	if [ -d "$sysroot_dir" ] && [ "$(ls -A "$sysroot_dir")" ]; then
-		print_info "Raspberry Pi sysroot already exists at $sysroot_dir"
-		return
+	local timestamp_file="$sysroot_dir/.last_sync"
+	local max_age_days=7
+
+	# Check if recent enough
+	if [ -f "$timestamp_file" ]; then
+		local now=$(date +%s)
+		local last_sync=$(date -r "$timestamp_file" +%s)
+		local age_days=$(( (now - last_sync) / 86400 ))
+
+		if [ "$age_days" -lt "$max_age_days" ]; then
+			print_info "Sysroot is recent ($age_days days old) — skipping sync."
+			return
+		else
+			print_info "Sysroot is $age_days days old — resyncing..."
+		fi
+	else
+		print_info "No previous sync timestamp — syncing now..."
 	fi
 
 	print_info "Syncing Raspberry Pi sysroot into $sysroot_dir ..."
-	mkdir -p "$sysroot_dir"
 
+	mkdir -p "$sysroot_dir/usr"
+	rsync -avz --delete "$raspi_user@$raspi_ip":/usr/include/ "$sysroot_dir/usr/include/"
+
+	mkdir -p "$sysroot_dir/usr/lib"
+	rsync -avz --delete "$raspi_user@$raspi_ip":/usr/lib/ "$sysroot_dir/usr/lib/"
+
+	mkdir -p "$sysroot_dir/usr/libexec"
+	rsync -avz --delete "$raspi_user@$raspi_ip":/usr/libexec/ "$sysroot_dir/usr/libexec/"
+
+	mkdir -p "$sysroot_dir/lib"
 	rsync -avz --delete "$raspi_user@$raspi_ip":/lib/ "$sysroot_dir/lib/"
-	rsync -avz --delete "$raspi_user@$raspi_ip":/usr/ "$sysroot_dir/usr/"
-	rsync -avz --delete "$raspi_user@$raspi_ip":/opt/ "$sysroot_dir/opt/"
-	rsync -avz --delete "$raspi_user@$raspi_ip":/etc/ "$sysroot_dir/etc/"
 
 	print_info "Raspberry Pi sysroot synced to $sysroot_dir"
 }
@@ -166,7 +186,9 @@ elif [ "$TARGET" == "server" ]; then
 	ensure_tool_installed arm-linux-gnu-gcc
 	ensure_tool_installed arm-linux-gnu-g++
 
-	execute_server_command "$TARGET" "$COMMAND"
+	RASPI_USER="$3"
+	RASPI_IP="$4"
+	execute_server_command "$TARGET" "$COMMAND" "$RASPI_USER" "$RASPI_IP"
 
 else
 	exit_with_target_error "$TARGET"
