@@ -22,7 +22,7 @@ function build() {
 	local build_dir="$project_dir/build"
 
 	make_build_dir "$build_dir"
-	echo "[Info] Configuring with: cmake -B $build_dir -S $project_dir $@"
+	echo "[INFO] Configuring with: cmake -B $build_dir -S $project_dir $@"
 	echo
 	cmake -B "$build_dir" -S "$project_dir" "$@"
 	cmake --build "$build_dir" -- -j$(nproc)
@@ -123,17 +123,20 @@ function execute_server_command() {
 			;;
 		deploy)
 			local binary_path="$build_dir/$EXECUTABLE_NAME"
+			local raspi_user="$3"
+			local raspi_ip="$4"
+			local raspi_dest_dir="/home/$raspi_user/$EXECUTABLE_NAME"
 
 			if [ ! -f "$binary_path" ]; then
 				print_error "Binary not found at $binary_path."
-				echo "Run './run.sh server build'."
+				echo "Run './run.sh server build <raspi_user> <raspi_ip>'."
 				exit 1
 			fi
 
-			echo "[Info] Deploying $binary_path to $RASPBERRY_PI_USER@$RASPBERRY_PI_IP:$RASPBERRY_PI_DEST_DIR"
-			ssh "$RASPBERRY_PI_USER@$RASPBERRY_PI_IP" "mkdir -p $RASPBERRY_PI_DEST_DIR"
-			scp "$binary_path" "$RASPBERRY_PI_USER@$RASPBERRY_PI_IP:$RASPBERRY_PI_DEST_DIR/"
-			echo "[Success] Deployed to Raspberry Pi."
+			echo "[INFO] Deploying $binary_path to $raspi_user@$raspi_ip:$raspi_dest_dir"
+			ssh "$raspi_user@$raspi_ip" "mkdir -p $raspi_dest_dir"
+			scp "$binary_path" "$raspi_user@$raspi_ip:$raspi_dest_dir/"
+			echo "[INFO] Deployed to Raspberry Pi."
 			;;
 		run)
 			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
