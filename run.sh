@@ -117,53 +117,65 @@ function execute_server_command() {
 	local command="$2"
 	local build_dir="$target/build"
 
+	local raspi_user="$3"
+	local raspi_ip="$4"
+	local raspi_dest_dir="/home/$raspi_user/$EXECUTABLE_NAME"
+
 	case "$command" in
-		build)
-			local raspi_user="$3"
-			local raspi_ip="$4"
-			sync_raspi_sysroot "$target/raspi-sysroot" "$raspi_user" "$raspi_ip"
-
-			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
-
-			build "$target" -DCMAKE_TOOLCHAIN_FILE="$toolchain_file"
-			echo
-			echo "Build completed."
-			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
-			;;
-		build)
-			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
-			build "$target" -DCMAKE_TOOLCHAIN_FILE="$toolchain_file"
-			echo
-			echo "Build completed."
-			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
-			;;
-		clean)
-			rm -rf "$build_dir"
-			echo "Cleaned build directory."
-			;;
-		deploy)
-			local binary_path="$build_dir/$EXECUTABLE_NAME"
-			local raspi_user="$3"
-			local raspi_ip="$4"
-			local raspi_dest_dir="/home/$raspi_user/$EXECUTABLE_NAME"
-
-			if [ ! -f "$binary_path" ]; then
-				print_error "Binary not found at $binary_path."
-				echo "Run './run.sh server build <raspi_user> <raspi_ip>'."
-				exit 1
-			fi
-
-			echo "[INFO] Deploying $binary_path to $raspi_user@$raspi_ip:$raspi_dest_dir"
+#		build)
+#			ensure_tool_installed arm-linux-gnu-gcc
+#			ensure_tool_installed arm-linux-gnu-g++
+#			sync_raspi_sysroot "$target/raspi-sysroot" "$raspi_user" "$raspi_ip"
+#			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
+#
+#			build "$target" -DCMAKE_TOOLCHAIN_FILE="$toolchain_file"
+#			echo
+#			echo "Build completed."
+#			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
+#			;;
+#		clean)
+#			rm -rf "$build_dir"
+#			echo "Cleaned build directory."
+#			;;
+#		deploy)
+#			local binary_path="$build_dir/$EXECUTABLE_NAME"
+#
+#			if [ ! -f "$binary_path" ]; then
+#				print_error "Binary not found at $binary_path."
+#				echo "Run './run.sh server build <raspi_user> <raspi_ip>'."
+#				exit 1
+#			fi
+#
+#			echo "[INFO] Deploying $binary_path to $raspi_user@$raspi_ip:$raspi_dest_dir"
+#			ssh "$raspi_user@$raspi_ip" "mkdir -p $raspi_dest_dir"
+#			scp "$binary_path" "$raspi_user@$raspi_ip:$raspi_dest_dir/"
+#			echo "[INFO] Deployed to Raspberry Pi."
+#			;;
+		remote-build)
+			print_info "Ensuring remote destination directory exists..."
 			ssh "$raspi_user@$raspi_ip" "mkdir -p $raspi_dest_dir"
-			scp "$binary_path" "$raspi_user@$raspi_ip:$raspi_dest_dir/"
-			echo "[INFO] Deployed to Raspberry Pi."
+
+			print_info "Syncing server/ to $raspi_user@$raspi_ip:$raspi_dest_dir/server/"
+			rsync -az --delete ./server/ "$raspi_user@$raspi_ip:$raspi_dest_dir/server/"
+			rsync -az ./dependencies/  "$raspi_user@$raspi_ip:$raspi_dest_dir/dependencies/"
+
+			print_info "Starting remote build on Raspberry Pi..."
+			ssh "$raspi_user@$raspi_ip" bash -c "'
+				set -e
+				cd $raspi_dest_dir/server
+				mkdir -p build
+				cd build
+				cmake ..
+				make -j\$(nproc)
+			'"
+
+			print_info "Remote build completed."
+			echo "You can run the server with:"
+			echo "  ssh $raspi_user@$raspi_ip $raspi_dest_dir/server/build/raspi-control"
 			;;
-		run)
-			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
-			build "$target" -DCMAKE_TOOLCHAIN_FILE="$toolchain_file"
-			echo
-			echo "Running executable..."
-			./"$build_dir"/"$EXECUTABLE_NAME"
+		remote-run)
+			print_info "Running executable remotely on Raspberry Pi..."
+			ssh "$raspi_user@$raspi_ip" "$raspi_dest_dir/server/build/$EXECUTABLE_NAME"
 			;;
 		*)
 			exit_with_command_error "$target" "$command"
@@ -181,15 +193,10 @@ ensure_tool_installed cmake
 # Execute command for target
 if   [ "$TARGET" == "client" ]; then
 	execute_client_command "$TARGET" "$COMMAND"
-
 elif [ "$TARGET" == "server" ]; then
-	ensure_tool_installed arm-linux-gnu-gcc
-	ensure_tool_installed arm-linux-gnu-g++
-
 	RASPI_USER="$3"
 	RASPI_IP="$4"
 	execute_server_command "$TARGET" "$COMMAND" "$RASPI_USER" "$RASPI_IP"
-
 else
 	exit_with_target_error "$TARGET"
 fi
