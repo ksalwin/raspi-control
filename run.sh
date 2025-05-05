@@ -11,17 +11,11 @@ source "$(dirname "$0")/scripts/usage.sh"
 EXECUTABLE_NAME="raspi-control"
 
 # --- Functions ---
-function make_build_dir() {
-	local build_dir="$1"
-	mkdir -p "$build_dir"
-}
-
 function build() {
 	local project_dir="$1"
 	shift # Remove "$1" from "$@", to not repeat "$1" in `cmake -B`
 	local build_dir="$project_dir/build"
 
-	make_build_dir "$build_dir"
 	echo "[INFO] Configuring with: cmake -B $build_dir -S $project_dir $@"
 	echo
 	cmake -B "$build_dir" -S "$project_dir" "$@"
