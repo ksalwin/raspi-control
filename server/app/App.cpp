@@ -1,5 +1,6 @@
 // app/App.cpp
 #include "App.h"
+#include "LoggerMsg.h"
 
 namespace app {
 
@@ -8,7 +9,7 @@ namespace app {
 		//auto config = core::Config::load(argc, argv);
 
 		// Log startup message
-		logger.info("Server application starting...");
+		logger.info(LoggerMsg::APP_START);
 
 		// Main loop placeholder
 		//while (!core::SignalHandler::shutdownRequested()) {
@@ -16,7 +17,7 @@ namespace app {
 		//}
 
 		// Log shutdown message
-		logger.info("Server application shutting down.");
+		logger.info(LoggerMsg::APP_TERMINATE);
 		return 0;
 	}
 

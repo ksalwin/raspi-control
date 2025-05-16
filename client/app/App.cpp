@@ -1,4 +1,5 @@
 #include "App.h"
+#include "LoggerMsg.h"
 
 void App::handle_user_input(const std::string & input) {
 	if		(input == "d" || input == "detect-rpi")

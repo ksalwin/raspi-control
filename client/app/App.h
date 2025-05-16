@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 #include "ILogger.h"
-#include "Logger.h"
 #include "ServerDiscovery.h"
 
 class App {
