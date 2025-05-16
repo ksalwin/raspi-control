@@ -24,7 +24,7 @@ you must comply with.
 - Build and run client: `sh run.sh`  
 `run.sh` will list all possible options.
 
-## SSH Key Setup - connect to Raspberry Pi without typing password every time
+# SSH Key Setup - connect to Raspberry Pi without typing password every time
 To avoid entering your password for every SSH, SCP, or rsync operation:
 1. **Generate a key pair** on your PC (if you don't already have one):
 ```sh
