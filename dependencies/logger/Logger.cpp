@@ -35,6 +35,14 @@ bool Logger::is_logfile_open() const
 	return logfile.is_open();
 }
 
+void Logger::info(const std::string & msg)
+{
+	std::string log_msg { get_timestamp() + "[INFO] " + msg + '\n' };
+
+	std::cout	<< log_msg;
+	logfile		<< log_msg;
+}
+
 void Logger::write(const std::string & msg)
 {
 	std::string log_msg { get_timestamp() + ' ' + msg + '\n' };
