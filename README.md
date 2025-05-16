@@ -23,3 +23,17 @@ you must comply with.
 - Clone repo: `gh repo clone ksalwin/raspi-control -- --recurse-submodules`
 - Build and run client: `sh run.sh`  
 `run.sh` will list all possible options.
+
+## SSH Key Setup - connect to Raspberry Pi without typing password every time
+To avoid entering your password for every SSH, SCP, or rsync operation:
+1. **Generate a key pair** on your PC (if you don't already have one):
+```sh
+ssh-keygen -t ed25519 -C "<username>@<hostname>"
+```
+2. **Copy public key to Raspberry Pi**
+You will be prompted for your password once.
+```sh
+ssh-copy-id <raspi_user>@<raspi_ip>
+```
+After completing these steps, all SSH-based operations will connect without further
+password prompts.
