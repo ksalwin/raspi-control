@@ -1,6 +1,15 @@
 # Source usage.sh relative to where exit_helpers.sh is located.
 source "$(dirname "${BASH_SOURCE[0]}")/usage.sh"
 
+function exit_with_arg_error {
+	local arg_name="$1"
+
+	print_error "Missing or invalid argument: <$arg_name>"
+	echo
+	print_usage
+	exit 1
+}
+
 function exit_with_command_error {
 	local target="$1"
 	local command="$2"

@@ -11,6 +11,15 @@ source "$(dirname "$0")/scripts/usage.sh"
 EXECUTABLE_NAME="raspi-control"
 
 # --- Functions ---
+function ensure_arg_provided() {
+	local arg_value="$1"
+	local arg_name="$2"
+
+	if [ -z "$arg_value" ]; then
+		exit_with_arg_error "$arg_name"
+	fi
+}
+
 function build() {
 	local project_dir="$1"
 	shift # Remove "$1" from "$@", to not repeat "$1" in `cmake -B`
@@ -178,7 +187,10 @@ function execute_server_command() {
 
 
 ##### Main Execution #####
+ensure_arg_provided "$1" "target" 
 TARGET="$1"
+
+ensure_arg_provided "$2" "command"
 COMMAND="$2"
 
 # Ensure common tools installed
@@ -188,6 +200,8 @@ ensure_tool_installed cmake
 if   [ "$TARGET" == "client" ]; then
 	execute_client_command "$TARGET" "$COMMAND"
 elif [ "$TARGET" == "server" ]; then
+	ensure_arg_provided "$3" "raspi_user"
+	ensure_arg_provided "$4" "raspi_ip"
 	RASPI_USER="$3"
 	RASPI_IP="$4"
 	execute_server_command "$TARGET" "$COMMAND" "$RASPI_USER" "$RASPI_IP"
