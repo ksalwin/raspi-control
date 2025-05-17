@@ -1,6 +1,7 @@
 // app/App.cpp
 #include "App.h"
 #include "LoggerMsg.h"
+#include "SignalHandler.h"
 
 namespace app {
 
@@ -12,9 +13,8 @@ namespace app {
 		logger.info(LoggerMsg::APP_START);
 
 		// Main loop placeholder
-		//while (!core::SignalHandler::shutdownRequested()) {
-			// TODO: Add networking, command handling, measurements, etc.
-		//}
+		while(!core::SignalHandler::shutdown_requested()) {
+		}
 
 		// Log shutdown message
 		logger.info(LoggerMsg::APP_TERMINATE);
