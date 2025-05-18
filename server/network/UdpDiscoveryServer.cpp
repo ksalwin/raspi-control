@@ -49,8 +49,7 @@ namespace network {
 				boost::system::error_code ec;
 				socket_.cancel(ec);
 				socket_.close(ec);
-    		}
-
+			}
 			bool is_running() const { return running_; }
 			// Set the callback to be invoked when a discovery message is received
 			void set_callback(DiscoveryCallback_t cb) {
@@ -99,7 +98,7 @@ namespace network {
 				if (callback_) {
 					callback_(	remote_endpoint_.address().to_string(),
 								remote_endpoint_.port());
-            	}
+				}
 			}
         }
 		
