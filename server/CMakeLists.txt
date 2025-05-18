@@ -11,6 +11,7 @@ add_executable(${PROJECT_NAME})
 add_subdirectory(app)
 add_subdirectory(core)
 add_subdirectory(main)
+add_subdirectory(network)
 
 # Dependencies
 add_subdirectory(../dependencies/logger ${CMAKE_BINARY_DIR}/dependencies/logger)
