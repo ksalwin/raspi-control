@@ -13,7 +13,7 @@
  *
  * To use:
  *   network::UdpDiscoveryServer server(io, 12345);
- *   server.onDiscovery([](std::string ip, uint16_t port) { ... });
+ *   server.on_discovery([](std::string ip, uint16_t port) { ... });
  *   server.start();
  */
 
