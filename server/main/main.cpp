@@ -1,19 +1,20 @@
+#include <boost/asio/io_context.hpp>
+
 #include "App.h"
 #include "Logger.h" 
-#include <SignalHandler.h>
+#include "SignalHandler.h"
 
 int main(int argc, char** argv) {
-    // Set up signal handlers for clean shutdown on SIGINT/SIGTERM
-    core::SignalHandler::init();
+	boost::asio::io_context io_context;	// Boost.Asio context;  shared event loop
+	Logger log;							// Logger instance
 
-    // Create a concrete logger that implements ILogger
-    Logger logger;
 
-    // Inject the logger into App
-    app::App app(logger);
+	core::SignalHandler::init();		// Set shutdown on SIGINT and SIGTERM signals
 
-    // Run the application
-    return app.run(argc, argv);
+
+	app::App app(log);					// App instance
+
+	return app.run(argc, argv);			// Run the App
 }
 
 
