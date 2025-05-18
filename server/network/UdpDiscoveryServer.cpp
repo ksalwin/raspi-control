@@ -100,7 +100,7 @@ namespace network {
 								remote_endpoint_.port());
 				}
 			}
-        }
+		}
 		
 		bool running_ {false};
 		udp::socket socket_;			// UDP socket for receiving broadcast messages
@@ -112,7 +112,7 @@ namespace network {
 // Public interface implementation
 
 	// Constructor: initialize implementation with I/O context and port
-	UdpDiscoveryServer::UdpDiscoveryServer(boost::asio::io_context& io_context,
+	UdpDiscoveryServer::UdpDiscoveryServer(	boost::asio::io_context& io_context,
 											uint16_t port)
 		: impl_(std::make_unique<Impl>(io_context, port)) {}
 
