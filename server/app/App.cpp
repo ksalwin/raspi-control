@@ -1,4 +1,3 @@
-// app/App.cpp
 #include "App.h"
 #include "LoggerMsg.h"
 #include "SignalHandler.h"
