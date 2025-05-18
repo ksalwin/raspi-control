@@ -20,4 +20,4 @@ add_subdirectory(network_handler)
 add_subdirectory(server_discovery)
 
 # Dependencies
-add_subdirectory(../dependencies/logger ${CMAKE_BINARY_DIR}/dependencies/logger)
+add_subdirectory(../shared/logger ${CMAKE_BINARY_DIR}/shared/logger)

@@ -125,42 +125,14 @@ function execute_server_command() {
 	local raspi_dest_dir="/home/$raspi_user/$EXECUTABLE_NAME"
 
 	case "$command" in
-#		build)
-#			ensure_tool_installed arm-linux-gnu-gcc
-#			ensure_tool_installed arm-linux-gnu-g++
-#			sync_raspi_sysroot "$target/raspi-sysroot" "$raspi_user" "$raspi_ip"
-#			local toolchain_file="$(realpath "$target/cmake/raspi-toolchain.cmake")"
-#
-#			build "$target" -DCMAKE_TOOLCHAIN_FILE="$toolchain_file"
-#			echo
-#			echo "Build completed."
-#			echo "Run executable with: ./$build_dir/$EXECUTABLE_NAME"
-#			;;
-#		clean)
-#			rm -rf "$build_dir"
-#			echo "Cleaned build directory."
-#			;;
-#		deploy)
-#			local binary_path="$build_dir/$EXECUTABLE_NAME"
-#
-#			if [ ! -f "$binary_path" ]; then
-#				print_error "Binary not found at $binary_path."
-#				echo "Run './run.sh server build <raspi_user> <raspi_ip>'."
-#				exit 1
-#			fi
-#
-#			echo "[INFO] Deploying $binary_path to $raspi_user@$raspi_ip:$raspi_dest_dir"
-#			ssh "$raspi_user@$raspi_ip" "mkdir -p $raspi_dest_dir"
-#			scp "$binary_path" "$raspi_user@$raspi_ip:$raspi_dest_dir/"
-#			echo "[INFO] Deployed to Raspberry Pi."
-#			;;
 		remote-build)
 			print_info "Ensuring remote destination directory exists..."
 			ssh "$raspi_user@$raspi_ip" "mkdir -p $raspi_dest_dir"
 
 			print_info "Syncing server/ to $raspi_user@$raspi_ip:$raspi_dest_dir/server/"
 			rsync -az --delete ./server/ "$raspi_user@$raspi_ip:$raspi_dest_dir/server/"
-			rsync -az ./dependencies/  "$raspi_user@$raspi_ip:$raspi_dest_dir/dependencies/"
+			rsync -az --delete ./dependencies/  "$raspi_user@$raspi_ip:$raspi_dest_dir/dependencies/"
+			rsync -az --delete ./shared/  "$raspi_user@$raspi_ip:$raspi_dest_dir/shared/"
 
 			print_info "Starting remote build on Raspberry Pi..."
 			ssh "$raspi_user@$raspi_ip" bash -c "'

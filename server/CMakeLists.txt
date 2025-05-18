@@ -14,4 +14,4 @@ add_subdirectory(main)
 add_subdirectory(network)
 
 # Dependencies
-add_subdirectory(../dependencies/logger ${CMAKE_BINARY_DIR}/dependencies/logger)
+add_subdirectory(../shared/logger ${CMAKE_BINARY_DIR}/shared/logger)
