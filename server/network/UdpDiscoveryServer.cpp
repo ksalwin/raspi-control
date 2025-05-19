@@ -38,17 +38,17 @@ namespace network {
 
 			// Start asynchronous receiving of UDP packets
 			void start() {
-				running_ = true;
+				running = true;
 				receive();
 			}
 			// Stop listening and close the socket
 			void stop() {
-				running_ = false;
+				running = false;
 				boost::system::error_code ec;
 				socket_.cancel(ec);
 				socket_.close(ec);
 			}
-			bool is_running() const { return running_; }
+			bool is_running() const { return running; }
 			// Set the callback to be invoked when a discovery message is received
 			void set_callback(DiscoveryCallback_t cb) {
 				// Store the user-provided callback so it can be invoked later.
@@ -80,7 +80,7 @@ namespace network {
 					// discovery messages.Boost.Asio's async operations are one-shot, so
 					// we must call fo_receive() again. This keeps the server alive and
 					// ready to handle the next incoming UDP packet.
-					if (running_) receive();
+					if (running) receive();
 			});
 		}
 
@@ -106,7 +106,7 @@ namespace network {
 			// the packet was sent to.
 		}
 		
-		bool running_ {false};
+		bool running{false};			// Flag indicating running server
 		udp::socket socket_;			// UDP socket for receiving broadcast messages
 		udp::endpoint remote_endpoint_;	// Endpoint representing the sender of the last received packet
 		std::vector<char> buffer_;		// Buffer to hold incoming message data
