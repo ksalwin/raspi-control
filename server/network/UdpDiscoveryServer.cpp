@@ -63,7 +63,7 @@ namespace network {
 		void receive() {
 			socket.async_receive_from(
 				boost::asio::buffer(buffer_),	// Destination buffer for incoming data
-				remote_endpoint_,	// Endpoint to store sender's address and port
+				remote_ep,	// Endpoint to store sender's address and port
 				[this](boost::system::error_code ec, std::size_t bytes_received) {
 					// Lambda function to be called by Boost.Asio when UDP message received.
 					// 'ec' reports the status of the operatio
@@ -93,8 +93,8 @@ namespace network {
 				// Check if callback was set and call it
 				if (callback_)
 				{
-					callback_(	remote_endpoint_.address().to_string(),
-								remote_endpoint_.port());
+					callback_(	remote_ep.address().to_string(),
+								remote_ep.port());
 				}
 			}
 
@@ -106,10 +106,10 @@ namespace network {
 			// the packet was sent to.
 		}
 
-		bool running{false};			// Flag indicating running server
-		udp::socket socket;				// UDP socket for receiving broadcast messages
-		udp::endpoint remote_endpoint_;	// Endpoint representing the sender of the last received packet
-		std::vector<char> buffer_;		// Buffer to hold incoming message data
+		bool running{false};		// Flag indicating running server
+		udp::socket socket;			// UDP socket for receiving broadcast messages
+		udp::endpoint remote_ep;	// Endpoint representing the sender of the last received packet
+		std::vector<char> buffer_;	// Buffer to hold incoming message data
 		UdpDiscoveryServer::DiscoveryCallback_t callback_; // Callback function to notify on discovery
 	};
 
