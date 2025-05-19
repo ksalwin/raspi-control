@@ -20,7 +20,7 @@ namespace network {
 		public:
 			// Constructor: bind the socket to the specified port using IPv4
 			Impl(boost::asio::io_context& io_context, uint16_t port)
-				: socket_(io_context, udp::endpoint(udp::v4(), port)),
+				: socket(io_context, udp::endpoint(udp::v4(), port)),
 				  buffer_(MaxDatagram)
 			{
 				// Allow quick restart & receive of broadcast frames
@@ -31,9 +31,9 @@ namespace network {
 				// - Waiting several seconds before running the server again is required
 				// With this line:
 				// - The server can immediately re-bind to the same port, no waiting
-        		socket_.set_option(boost::asio::socket_base::reuse_address(true));
-				// Enable broadcast reception so this socket can receive UDP broadcast packets
-				socket_.set_option(boost::asio::socket_base::broadcast(true));
+				socket.set_option(boost::asio::socket_base::reuse_address(true));
+				// Enable reception of broadcast packets on this socket
+				socket.set_option(boost::asio::socket_base::broadcast(true));
 			}
 
 			// Start asynchronous receiving of UDP packets
@@ -45,8 +45,8 @@ namespace network {
 			void stop() {
 				running = false;
 				boost::system::error_code ec;
-				socket_.cancel(ec);
-				socket_.close(ec);
+				socket.cancel(ec);
+				socket.close(ec);
 			}
 			bool is_running() const { return running; }
 			// Set the callback to be invoked when a discovery message is received
@@ -61,7 +61,7 @@ namespace network {
 		// Begin an asynchronous receive operation for incoming UDP datagrams.
 		// This method sets up a non-blocking read that triggers a callback when data arrives.
 		void receive() {
-			socket_.async_receive_from(
+			socket.async_receive_from(
 				boost::asio::buffer(buffer_),	// Destination buffer for incoming data
 				remote_endpoint_,	// Endpoint to store sender's address and port
 				[this](boost::system::error_code ec, std::size_t bytes_received) {
@@ -105,9 +105,9 @@ namespace network {
 			// Server receives client's IP in remote_endpoint.address(), not the IP that
 			// the packet was sent to.
 		}
-		
+
 		bool running{false};			// Flag indicating running server
-		udp::socket socket_;			// UDP socket for receiving broadcast messages
+		udp::socket socket;				// UDP socket for receiving broadcast messages
 		udp::endpoint remote_endpoint_;	// Endpoint representing the sender of the last received packet
 		std::vector<char> buffer_;		// Buffer to hold incoming message data
 		UdpDiscoveryServer::DiscoveryCallback_t callback_; // Callback function to notify on discovery
