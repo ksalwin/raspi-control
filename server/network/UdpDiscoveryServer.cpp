@@ -8,6 +8,7 @@ namespace network {
 	namespace {
 		constexpr char ExpectedPhrase[] = "raspi-control server are you there?";
 		constexpr std::size_t MaxDatagram = 1024;
+		const boost::asio::ip::address_v4 
 	}
 
 	// Import the 'udp' type alias from Boost.Asio for brevity.
@@ -23,17 +24,6 @@ namespace network {
 				: socket_(io_context, udp::endpoint(udp::v4(), port)),
 				  buffer_(MaxDatagram)
 			{
-				// Movedrd the address parsing into the constructor to
-				// - happen after main()
-				// - allow log erros
-				// - avoid seg faults when running
-				try {
-					BroadcastAddr = boost::asio::ip::make_address_v4("192.168.0.255");
-				} catch (const std::exception& e) {
-					std::cerr << "Invalid broadcast address: " << e.what() << "\n";
-					std::abort(); // or handle error gracefully
-				}
-
 				// Allow quick restart & receive of broadcast frames
 				// If server stops and restarts quickly (e.g., during development or
 				// crashes), the port might still be marked as "in use" by the OS.
@@ -97,7 +87,7 @@ namespace network {
 
 		void check(std::size_t bytes_received) {
 			// Check payload size
-			// Check payload message (char [])
+			// Check message (char [])
 			if ((bytes_received == std::strlen(ExpectedPhrase)) &&
 				(std::memcmp(buffer_.data(), ExpectedPhrase, bytes_received) == 0))
 			{
@@ -111,7 +101,6 @@ namespace network {
 		}
 		
 		bool running_ {false};
-		boost::asio::ip::address_v4 BroadcastAddr;
 		udp::socket socket_;			// UDP socket for receiving broadcast messages
 		udp::endpoint remote_endpoint_;	// Endpoint representing the sender of the last received packet
 		std::vector<char> buffer_;		// Buffer to hold incoming message data
