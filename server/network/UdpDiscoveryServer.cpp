@@ -8,8 +8,6 @@ namespace network {
 	namespace {
 		constexpr char ExpectedPhrase[] = "raspi-control server are you there?";
 		constexpr std::size_t MaxDatagram = 1024;
-		const boost::asio::ip::address_v4 BroadcastAddr =
-			boost::asio::ip::make_address_v4("192.168.0.255");
 	}
 
 	// Import the 'udp' type alias from Boost.Asio for brevity.
@@ -25,6 +23,17 @@ namespace network {
 				: socket_(io_context, udp::endpoint(udp::v4(), port)),
 				  buffer_(MaxDatagram)
 			{
+				// Movedrd the address parsing into the constructor to
+				// - happen after main()
+				// - allow log erros
+				// - avoid seg faults when running
+				try {
+					BroadcastAddr = boost::asio::ip::make_address_v4("192.168.0.255");
+				} catch (const std::exception& e) {
+					std::cerr << "Invalid broadcast address: " << e.what() << "\n";
+					std::abort(); // or handle error gracefully
+				}
+
 				// Allow quick restart & receive of broadcast frames
 				// If server stops and restarts quickly (e.g., during development or
 				// crashes), the port might still be marked as "in use" by the OS.
@@ -87,15 +96,14 @@ namespace network {
 		}
 
 		void check(std::size_t bytes_received) {
-			// Check destination address
 			// Check payload size
-			// Check payload message
-			// Check callback
-			if ((remote_endpoint_.address() == BroadcastAddr) && 
-				(bytes_received == std::strlen(ExpectedPhrase)) &&
-				(buffer_.data() == ExpectedPhrase)) {
-
-				if (callback_) {
+			// Check payload message (char [])
+			if ((bytes_received == std::strlen(ExpectedPhrase)) &&
+				(std::memcmp(buffer_.data(), ExpectedPhrase, bytes_received) == 0))
+			{
+				// Check if callback was set and call it
+				if (callback_)
+				{
 					callback_(	remote_endpoint_.address().to_string(),
 								remote_endpoint_.port());
 				}
@@ -103,6 +111,7 @@ namespace network {
 		}
 		
 		bool running_ {false};
+		boost::asio::ip::address_v4 BroadcastAddr;
 		udp::socket socket_;			// UDP socket for receiving broadcast messages
 		udp::endpoint remote_endpoint_;	// Endpoint representing the sender of the last received packet
 		std::vector<char> buffer_;		// Buffer to hold incoming message data
@@ -112,7 +121,7 @@ namespace network {
 // Public interface implementation
 
 	// Constructor: initialize implementation with I/O context and port
-	UdpDiscoveryServer::UdpDiscoveryServer(	boost::asio::io_context& io_context,
+	UdpDiscoveryServer::UdpDiscoveryServer(	boost::asio::io_context & io_context,
 											uint16_t port)
 		: impl_(std::make_unique<Impl>(io_context, port)) {}
 

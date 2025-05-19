@@ -41,11 +41,11 @@ namespace network {
 		public:
 			// Type for a callback when a discovery message is received
 			using DiscoveryCallback_t =
-				std::function<void(const std::string& client_ip, uint16_t client_port)>;
+				std::function<void(const std::string & client_ip, uint16_t port)>;
 
 			// Constructor: Server will create UDP socket and bind to specific port number
 			// on all available network interfaces (Ethernet, Wi-Fi, loopback, etc.)
-			UdpDiscoveryServer(boost::asio::io_context& io_context, uint16_t port);
+			UdpDiscoveryServer(boost::asio::io_context & io_context, uint16_t port);
 			~UdpDiscoveryServer();
 
 			void start();				// Start listening
