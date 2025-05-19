@@ -8,7 +8,6 @@ namespace network {
 	namespace {
 		constexpr char ExpectedPhrase[] = "raspi-control server are you there?";
 		constexpr std::size_t MaxDatagram = 1024;
-		const boost::asio::ip::address_v4 
 	}
 
 	// Import the 'udp' type alias from Boost.Asio for brevity.
@@ -98,6 +97,13 @@ namespace network {
 								remote_endpoint_.port());
 				}
 			}
+
+			// Q: Why not to check broadcast addr?
+			// Boost.Asio (and most OSes) does not expose the destination address of
+			// incoming UDP packets unless enabled platform-specific options
+			// (like IP_PKTINFO on Linux).
+			// Server receives client's IP in remote_endpoint.address(), not the IP that
+			// the packet was sent to.
 		}
 		
 		bool running_ {false};
